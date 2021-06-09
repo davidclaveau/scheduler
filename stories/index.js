@@ -113,13 +113,13 @@ storiesOf("DayList", module)
   .add("Monday", () => (
     <DayList
       days={days}
-      value={"Monday"}
+      day={"Monday"}
       setDay={action("setDay")} />
   ))
   .add("Tuesday", () => (
     <DayList
       days={days}
-      value={"Tuesday"}
+      day={"Tuesday"}
       setDay={action("setDay")} />
   ));
 
