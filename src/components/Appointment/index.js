@@ -18,6 +18,7 @@ export default function Appointment(props) {
   );
 
   console.log("props", props.interview)
+  console.log("mode", mode)
   // console.log("interview.student", props.interview.student);
   // console.log("interview.interviewer", props.interview.interviewer);
 
@@ -32,6 +33,15 @@ export default function Appointment(props) {
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer.name}
+        />
+      )}
+      {mode === CREATE && (
+        <Form
+          name={""}
+          interviewer={""}
+          interviewers={[]}
+          onSave={() => console.log("onSave")}
+          onCancel={() => back()}
         />
       )}
     </article>
