@@ -9,7 +9,7 @@ import DayList from "./DayList";
 import Appointment from "./Appointment";
 
 // Helpers
-import {getAppointmentsForDay, getInterview} from "helpers/selectors";
+import { getAppointmentsForDay, getInterview } from "helpers/selectors";
 
 export default function Application(props) {
   const [state, setState] = useState({
