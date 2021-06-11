@@ -9,7 +9,7 @@ import DayList from "./DayList";
 import Appointment from "./Appointment";
 
 // Helpers
-import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors";
 
 export default function Application(props) {
   const [state, setState] = useState({
@@ -21,7 +21,10 @@ export default function Application(props) {
 
   const setDay = day => setState({ ...state, day });
   const appointments = getAppointmentsForDay(state, state.day);
+  const interviewers = getInterviewersForDay(state, state.day);
 
+  // Get data for interview scheduler on load
+  // Days, appointments, and interviews
   useEffect(() => {
     const urlDays = `http://localhost:8001/api/days`;
     const urlAppointments = `http://localhost:8001/api/appointments`;
@@ -45,6 +48,32 @@ export default function Application(props) {
     });
   }, [])
 
+  function bookInterview(id, interview) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    // Return a promise for Appointment to wait on
+    // If successful, Appointment will update with SHOW
+    return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
+      .then(response => {
+        setState({
+          ...state,
+          appointments
+        });
+        console.log("Interview accepted!", response);
+      })
+      .catch(err => {
+        console.log("There was an error in the PUT request:", err);
+      });
+  }
+
   // Loop through each appointment and display each day's appointment item
   // Get the interviewer specific to the interview
   const schedule = appointments.map(appointment => {
@@ -55,6 +84,8 @@ export default function Application(props) {
         key={appointment.id}
         {...appointment}
         interview={interview}
+        interviewers={interviewers}
+        bookInterview={bookInterview}
       />
     );
   });

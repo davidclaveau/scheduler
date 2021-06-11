@@ -8,8 +8,6 @@ function useVisualMode(initial) {
   // Set history using previous value
   // Spread previous history if multiple values
   const transition = function(newMode, replace = false) {
-    console.log("mode", mode)
-    
     setHistory(prev => {
       setMode(newMode);
        
