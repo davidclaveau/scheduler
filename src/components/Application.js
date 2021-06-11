@@ -48,7 +48,10 @@ export default function Application(props) {
     });
   }, [])
 
+  // Creates a PUT request with the appointment id and the interview obj
+  // If successful, sets and renders the state with the appointment obj
   function bookInterview(id, interview) {
+    console.log("book", id, interview)
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -59,8 +62,6 @@ export default function Application(props) {
       [id]: appointment
     };
 
-    // Return a promise for Appointment to wait on
-    // If successful, Appointment will update with SHOW
     return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
       .then(response => {
         setState({
@@ -68,9 +69,27 @@ export default function Application(props) {
           appointments
         });
         console.log("Interview accepted!", response);
-      })
-      .catch(err => {
-        console.log("There was an error in the PUT request:", err);
+      });
+  }
+
+  function cancelInterview(id, interview) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    return axios.delete(`http://localhost:8001/api/appointments/${id}`)
+      .then(response => {
+        setState({
+          ...state,
+          appointments
+        });
+        console.log("Interview deleted!", response);
       });
   }
 
@@ -86,6 +105,7 @@ export default function Application(props) {
         interview={interview}
         interviewers={interviewers}
         bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
       />
     );
   });
