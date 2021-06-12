@@ -50,10 +50,7 @@ export default function Appointment(props) {
   }
 
   function destroy() {
-    const interview = {
-      student: props.interview.student,
-      interviewer: props.interview.interviewer
-    };
+    const interview = null;
 
     transition(DELETING, true);
 

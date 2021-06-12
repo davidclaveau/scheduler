@@ -61,11 +61,11 @@ function useApplicationData() {
   }
 
   // Delete an appointment using appointment id
-  // Use interview obj to set state
+  // Use interview obj (null) to set state
   function cancelInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
-      interview: { ...interview }
+      interview
     };
 
     const appointments = {
