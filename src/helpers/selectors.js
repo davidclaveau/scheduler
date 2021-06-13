@@ -45,4 +45,56 @@ const getInterview = (state, interview) => {
   }
 };
 
-export {getAppointmentsForDay, getInterviewersForDay, getInterview}
+const getSpotsCreateEdit = (state, id) => {
+  const days = [
+    ...state.days,
+  ];
+
+  for (const index in state.days) {
+    let spotCount = state.days[index].spots;
+    const found = state.days[index].appointments.find(appointment => appointment === id)
+    
+    if (found) {
+      // Copy the day object
+      const dayObjCopy = {
+        ...state.days[index]
+      }
+      
+      // state.appointments is null - therefore we're adding a new appt
+      // If it does exist, we're editing so the spots remains the same
+      if (!state.appointments[id].interview) {
+        spotCount -= 1;
+        dayObjCopy.spots = spotCount;
+        days[index] = dayObjCopy;
+      }
+    }
+  }
+
+  return days;
+}
+
+const getSpotsCancel = (state, id) => {
+  const days = [
+    ...state.days,
+  ];
+
+  for (const index in state.days) {
+    let spotCount = state.days[index].spots;
+    const found = state.days[index].appointments.find(appointment => appointment === id)
+    
+    if (found) {
+      // Copy the day object
+      const dayObjCopy = {
+        ...state.days[index]
+      }
+      
+      spotCount += 1;
+      dayObjCopy.spots = spotCount;
+      days[index] = dayObjCopy;
+    }
+  }
+
+  return days;
+}
+
+export { getAppointmentsForDay, getInterviewersForDay, getInterview, getSpotsCreateEdit, getSpotsCancel }

@@ -8,7 +8,7 @@ import DayList from "./DayList";
 import Appointment from "./Appointment";
 
 // Custom Hooks
-import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors";
+import { getAppointmentsForDay, getInterviewersForDay, getInterview, getSpotsForDay } from "helpers/selectors";
 import { useApplicationData } from "hooks/useApplicationData";
 
 export default function Application(props) {
@@ -18,7 +18,7 @@ export default function Application(props) {
     bookInterview,
     cancelInterview,
   } = useApplicationData();
-  
+ 
   const interviewers = getInterviewersForDay(state, state.day);
   
   // Loop through each appointment and display each day's appointment

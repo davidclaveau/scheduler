@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
+import { getSpotsCreateEdit, getSpotsCancel } from "helpers/selectors";
+
 
 function useApplicationData() {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
     appointments: {},
-    interviewers: {}
+    interviewers: {},
   });
 
-  // Used in Application to render data for each day
   const setDay = day => setState({ ...state, day });
 
   // Render days, appts, and interviews on initial load
@@ -37,9 +38,8 @@ function useApplicationData() {
   }, [])
 
   // Create/edit a new appointment using appointment id
-  // With created interview obj from Appointment component
+  // with created interview obj from Appointment component
   function bookInterview(id, interview) {
-    console.log("book", id, interview)
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -49,14 +49,18 @@ function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
+    
+    const days = getSpotsCreateEdit(state, id);
 
     return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
       .then(response => {
         setState({
           ...state,
-          appointments
+          appointments,
+          days
         });
-        console.log("Interview accepted!", response);
+
+        console.log("Interview created/edited!", response);
       });
   }
 
@@ -73,12 +77,16 @@ function useApplicationData() {
       [id]: appointment
     };
 
+    const days = getSpotsCancel(state, id);
+
     return axios.delete(`http://localhost:8001/api/appointments/${id}`)
       .then(response => {
         setState({
           ...state,
-          appointments
+          appointments,
+          days
         });
+        
         console.log("Interview deleted!", response);
       });
   }

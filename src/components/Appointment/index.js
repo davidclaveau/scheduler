@@ -50,6 +50,7 @@ export default function Appointment(props) {
   }
 
   function destroy() {
+    // Replace interview object to null, to be used to update state
     const interview = null;
 
     transition(DELETING, true);
@@ -61,7 +62,6 @@ export default function Appointment(props) {
       .catch(error => {
         console.log("There was an error in deleting the appointment")
         transition(ERROR_DELETE, true);
-
       });
   }
 
