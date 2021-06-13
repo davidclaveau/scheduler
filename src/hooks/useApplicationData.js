@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
-import { getSpotsCreateEdit, getSpotsCancel } from "helpers/selectors";
+import { getSpotsForDay } from "helpers/selectors";
 
 
 function useApplicationData() {
@@ -50,7 +50,7 @@ function useApplicationData() {
       [id]: appointment
     };
     
-    const days = getSpotsCreateEdit(state, id);
+    const days = getSpotsForDay(state, id, appointments);
 
     return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
       .then(response => {
@@ -77,7 +77,7 @@ function useApplicationData() {
       [id]: appointment
     };
 
-    const days = getSpotsCancel(state, id);
+    const days = getSpotsForDay(state, id, appointments);
 
     return axios.delete(`http://localhost:8001/api/appointments/${id}`)
       .then(response => {

@@ -45,13 +45,13 @@ const getInterview = (state, interview) => {
   }
 };
 
-const getSpotsCreateEdit = (state, id) => {
+const getSpotsForDay = (state, id, appointments) => {
   const days = [
     ...state.days,
   ];
 
   for (const index in state.days) {
-    let spotCount = state.days[index].spots;
+    // let spotCount = state.days[index].spots;
     const found = state.days[index].appointments.find(appointment => appointment === id)
     
     if (found) {
@@ -59,37 +59,16 @@ const getSpotsCreateEdit = (state, id) => {
       const dayObjCopy = {
         ...state.days[index]
       }
-      
-      // state.appointments is null - therefore we're adding a new appt
-      // If it does exist, we're editing so the spots remains the same
-      if (!state.appointments[id].interview) {
-        spotCount -= 1;
-        dayObjCopy.spots = spotCount;
-        days[index] = dayObjCopy;
-      }
-    }
-  }
 
-  return days;
-}
+      // Count interviews and spots remaining for the selected day
+      let spotsRemaining = 0;
+      dayObjCopy.appointments.forEach(appt => {
+        if (!appointments[appt].interview) {
+          spotsRemaining++;
+        }
+      });
 
-const getSpotsCancel = (state, id) => {
-  const days = [
-    ...state.days,
-  ];
-
-  for (const index in state.days) {
-    let spotCount = state.days[index].spots;
-    const found = state.days[index].appointments.find(appointment => appointment === id)
-    
-    if (found) {
-      // Copy the day object
-      const dayObjCopy = {
-        ...state.days[index]
-      }
-      
-      spotCount += 1;
-      dayObjCopy.spots = spotCount;
+      dayObjCopy.spots = spotsRemaining;
       days[index] = dayObjCopy;
     }
   }
@@ -97,4 +76,4 @@ const getSpotsCancel = (state, id) => {
   return days;
 }
 
-export { getAppointmentsForDay, getInterviewersForDay, getInterview, getSpotsCreateEdit, getSpotsCancel }
+export { getAppointmentsForDay, getInterviewersForDay, getInterview, getSpotsForDay }
