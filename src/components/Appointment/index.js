@@ -9,7 +9,7 @@ import Status from "./Status";
 import Confirm from "./Confirm";
 import Error from "./Error";
 
-import { useVisualMode } from '../../hooks/useVisualMode';
+import useVisualMode from 'hooks/useVisualMode';
 import Form from "./Form";
 
 

@@ -60,14 +60,14 @@ const getSpotsForDay = (state, id, appointments) => {
         ...state.days[index]
       }
 
-      // Count interviews and spots remaining for the selected day
+      // Count interviews that are null and add to spots remaining counter
       let spotsRemaining = 0;
       dayObjCopy.appointments.forEach(appt => {
         if (!appointments[appt].interview) {
           spotsRemaining++;
         }
       });
-
+      
       dayObjCopy.spots = spotsRemaining;
       days[index] = dayObjCopy;
     }
