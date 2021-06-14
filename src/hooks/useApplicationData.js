@@ -1,17 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import axios from "axios";
 import { getSpotsForDay } from "helpers/selectors";
 
 
 function useApplicationData() {
-  const [state, setState] = useState({
+  const initialState = {
     day: "Monday",
     days: [],
     appointments: {},
     interviewers: {},
-  });
+  };
 
-  const setDay = day => setState({ ...state, day });
+  function reducer(state, action) {
+    const day = action.day;
+    const days = action.days
+    const appointments = action.appointments
+    const interviewers = action.interviewers
+
+    switch (action.type) {
+      case 'SET_DAY':
+        return ({
+           ...state,
+          day
+        });
+      case 'SET_APPLICATION_DATA':
+        return ({
+          ...state,
+          days,
+          appointments,
+          interviewers
+        })
+      case 'SET_INTERVIEW':
+        return ({
+          ...state,
+          days,
+          appointments
+        }) 
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  
+  const setDay = day => dispatch({ type: 'SET_DAY', day });
 
   // Render days, appts, and interviews on initial load
   useEffect(() => {
@@ -28,12 +60,15 @@ function useApplicationData() {
       Promise.resolve(promise2),
       Promise.resolve(promise3),
     ]).then((all) => {
-      setState(prev => ({
-          ...prev,
-          days: all[0].data,
-          appointments: all[1].data,
-          interviewers: all[2].data
-        }));
+      dispatch({ 
+        type: 'SET_APPLICATION_DATA',
+        days: all[0].data,
+        appointments: all[1].data,
+        interviewers: all[2].data
+      });
+      // dispatch({ type: "daysSetState", value: all[0].data });
+      // dispatch({ type: "appointmentsSetState", value: all[1].data });
+      // dispatch({ type: "interviewersSetState", value: all[2].data });
     });
   }, [])
 
@@ -54,11 +89,7 @@ function useApplicationData() {
 
     return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
       .then(response => {
-        setState({
-          ...state,
-          appointments,
-          days
-        });
+        dispatch({ type: 'SET_INTERVIEW', appointments, days});
 
         console.log("Interview created/edited!", response);
       });
@@ -81,11 +112,8 @@ function useApplicationData() {
 
     return axios.delete(`http://localhost:8001/api/appointments/${id}`)
       .then(response => {
-        setState({
-          ...state,
-          appointments,
-          days
-        });
+        dispatch({ type: 'SET_INTERVIEW', appointments, days});
+
         
         console.log("Interview deleted!", response);
       });
