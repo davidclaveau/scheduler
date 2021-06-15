@@ -1,7 +1,5 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import axios from "axios";
-import { getSpotsForDay } from "helpers/selectors";
-
 
 function useApplicationData() {
   const initialState = {
@@ -41,6 +39,38 @@ function useApplicationData() {
     }
   };
 
+  const updateSpotsRemaining = (state, id, appointments) => {
+    const days = [
+      ...state.days,
+    ];
+  
+    for (const index in state.days) {
+      const found = state.days[index].appointments.find(appointment => appointment === id)
+
+      if (found) {
+        // Copy the day object that's found
+        const dayObjCopy = {
+          ...state.days[index]
+        }
+
+        // Count interviews in that dayObj that are null
+        // add to spotsRemaining counter for null interviews
+        let spotsRemaining = 0;
+        dayObjCopy.appointments.forEach(appt => {
+          if (!appointments[appt].interview) {
+            spotsRemaining++;
+          }
+        });
+        
+        // Update the spots for the dayObj, update days[index] to be returned
+        dayObjCopy.spots = spotsRemaining;
+        days[index] = dayObjCopy;
+      }
+    }
+  
+    return days;
+  }
+
   const [state, dispatch] = useReducer(reducer, initialState);
   
   const setDay = day => dispatch({ type: 'SET_DAY', day });
@@ -66,9 +96,6 @@ function useApplicationData() {
         appointments: all[1].data,
         interviewers: all[2].data
       });
-      // dispatch({ type: "daysSetState", value: all[0].data });
-      // dispatch({ type: "appointmentsSetState", value: all[1].data });
-      // dispatch({ type: "interviewersSetState", value: all[2].data });
     });
   }, [])
 
@@ -85,7 +112,7 @@ function useApplicationData() {
       [id]: appointment
     };
     
-    const days = getSpotsForDay(state, id, appointments);
+    const days = updateSpotsRemaining(state, id, appointments);
 
     return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
       .then(response => {
@@ -108,7 +135,7 @@ function useApplicationData() {
       [id]: appointment
     };
 
-    const days = getSpotsForDay(state, id, appointments);
+    const days = updateSpotsRemaining(state, id, appointments);
 
     return axios.delete(`http://localhost:8001/api/appointments/${id}`)
       .then(response => {
