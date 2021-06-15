@@ -39,6 +39,8 @@ function useApplicationData() {
     }
   };
 
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   const updateSpotsRemaining = (state, id, appointments) => {
     const days = [
       ...state.days,
@@ -71,7 +73,6 @@ function useApplicationData() {
     return days;
   }
 
-  const [state, dispatch] = useReducer(reducer, initialState);
   
   const setDay = day => dispatch({ type: 'SET_DAY', day });
 
