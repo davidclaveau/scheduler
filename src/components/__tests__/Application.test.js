@@ -19,7 +19,7 @@ import Application from "components/Application";
 afterEach(cleanup);
 
 describe("Application", () => {
-  it("changes the schedule when a new day is selected", async () => {
+  it("defaults to Monday and changes the schedule when a new day is selected", async () => {
     const { getByText } = render(<Application />);
 
     await waitForElement(() => getByText("Monday"))
@@ -164,7 +164,7 @@ describe("Application", () => {
 
     await waitForElement(() => getByText(appointment, "Could not delete appointment."));
   })
-  
+
 });
 
 
