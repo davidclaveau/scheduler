@@ -18,7 +18,7 @@ export default function Application(props) {
     bookInterview,
     cancelInterview,
   } = useApplicationData();
- 
+
   const interviewers = getInterviewersForDay(state, state.day);
   
   // Loop through each appointment and display each day's appointment

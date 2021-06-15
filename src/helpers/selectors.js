@@ -45,35 +45,4 @@ const getInterview = (state, interview) => {
   }
 };
 
-const getSpotsForDay = (state, id, appointments) => {
-  const days = [
-    ...state.days,
-  ];
-
-  for (const index in state.days) {
-    // let spotCount = state.days[index].spots;
-    const found = state.days[index].appointments.find(appointment => appointment === id)
-    
-    if (found) {
-      // Copy the day object
-      const dayObjCopy = {
-        ...state.days[index]
-      }
-
-      // Count interviews that are null and add to spots remaining counter
-      let spotsRemaining = 0;
-      dayObjCopy.appointments.forEach(appt => {
-        if (!appointments[appt].interview) {
-          spotsRemaining++;
-        }
-      });
-      
-      dayObjCopy.spots = spotsRemaining;
-      days[index] = dayObjCopy;
-    }
-  }
-
-  return days;
-}
-
-export { getAppointmentsForDay, getInterviewersForDay, getInterview, getSpotsForDay }
+export { getAppointmentsForDay, getInterviewersForDay, getInterview }
