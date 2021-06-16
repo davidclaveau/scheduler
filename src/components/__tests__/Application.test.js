@@ -115,7 +115,7 @@ describe("Application", () => {
     expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
   });
   
-  it("shows the save error when failing to save an appointment", async () => {
+  it("shows the save error when failing to save an appointment, show editing screen on close", async () => {
     axios.put.mockRejectedValueOnce();
     
     const { container } = render(<Application />);
@@ -141,12 +141,16 @@ describe("Application", () => {
     expect(getByText(appointment, "Saving")).toBeInTheDocument();
 
     await waitForElement(() => getByText(appointment, "Could not save appointment."));
+
+    fireEvent.click(getByAltText(appointment, "Close"));
+
+    expect(getByTestId(appointment, "student-name-input")).toBeInTheDocument();
   });
 
-  it("shows the delete error when failing to delete an existing appointment", async () => {
+  it("shows the delete error when failing to delete an existing appointment, show edit/delete buttons as normal on close", async () => {
     axios.delete.mockRejectedValueOnce();
     
-    const { container, debug } = render(<Application />);
+    const { container } = render(<Application />);
   
     await waitForElement(() => getByText(container, "Archie Cohen"));
   
@@ -163,8 +167,65 @@ describe("Application", () => {
     expect(getByText(appointment, "Deleting")).toBeInTheDocument();
 
     await waitForElement(() => getByText(appointment, "Could not delete appointment."));
+
+    fireEvent.click(getByAltText(appointment, "Close"));
+
+    expect(getByText(appointment, "Archie Cohen")).toBeInTheDocument();
   })
 
+  it("cancels adding an interview, showing appointment as empty", async () => {
+    axios.delete.mockRejectedValueOnce();
+    
+    const { container } = render(<Application />);
+  
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+  
+    const appointments = getAllByTestId(container, "appointment");
+
+    const appointment = appointments[0];
+
+    fireEvent.click(getByAltText(appointment, "Add"));
+    
+    fireEvent.click(getByText(appointment, "Cancel"));
+    
+    await waitForElement(() => getByAltText(appointment, "Add"));
+  })
+
+  it("cancels deleting an interview, showing same interview with no changes", async () => {
+    axios.delete.mockRejectedValueOnce();
+    
+    const { container } = render(<Application />);
+  
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+  
+    const appointments = getAllByTestId(container, "appointment");
+
+    const appointment = appointments[1];
+
+    fireEvent.click(getByAltText(appointment, "Delete"));
+    
+    fireEvent.click(getByText(appointment, "Cancel"));
+    
+    expect(getByText(container, "Archie Cohen")).toBeInTheDocument();
+  })
+
+  it("cancels editing an interview, showing same interview with no changes", async () => {
+    axios.delete.mockRejectedValueOnce();
+    
+    const { container } = render(<Application />);
+  
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+  
+    const appointments = getAllByTestId(container, "appointment");
+
+    const appointment = appointments[1];
+
+    fireEvent.click(getByAltText(appointment, "Edit"));
+    
+    fireEvent.click(getByText(appointment, "Cancel"));
+    
+    expect(getByText(container, "Archie Cohen")).toBeInTheDocument();
+  })
 });
 
 
