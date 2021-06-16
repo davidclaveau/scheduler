@@ -1,5 +1,10 @@
 import { useEffect, useReducer } from 'react';
 import axios from "axios";
+import reducer, {
+  SET_DAY,
+  SET_APPLICATION_DATA,
+  SET_INTERVIEW
+} from "reducers/application";
 
 function useApplicationData() {
   const initialState = {
@@ -9,38 +14,8 @@ function useApplicationData() {
     interviewers: {},
   };
 
-  function reducer(state, action) {
-    const day = action.day;
-    const days = action.days
-    const appointments = action.appointments
-    const interviewers = action.interviewers
-
-    switch (action.type) {
-      case 'SET_DAY':
-        return ({
-           ...state,
-          day
-        });
-      case 'SET_APPLICATION_DATA':
-        return ({
-          ...state,
-          days,
-          appointments,
-          interviewers
-        })
-      case 'SET_INTERVIEW':
-        return ({
-          ...state,
-          days,
-          appointments
-        }) 
-      default:
-        return state;
-    }
-  };
-
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  
   const updateSpotsRemaining = (state, id, appointments) => {
     const days = [
       ...state.days,
@@ -72,9 +47,8 @@ function useApplicationData() {
   
     return days;
   }
-
   
-  const setDay = day => dispatch({ type: 'SET_DAY', day });
+  const setDay = day => dispatch({ type: SET_DAY, day });
 
   // Render days, appts, and interviews on initial load
   useEffect(() => {
@@ -92,7 +66,7 @@ function useApplicationData() {
       Promise.resolve(promise3),
     ]).then((all) => {
       dispatch({ 
-        type: 'SET_APPLICATION_DATA',
+        type: SET_APPLICATION_DATA,
         days: all[0].data,
         appointments: all[1].data,
         interviewers: all[2].data
@@ -117,7 +91,7 @@ function useApplicationData() {
 
     return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
       .then(response => {
-        dispatch({ type: 'SET_INTERVIEW', appointments, days});
+        dispatch({ type: SET_INTERVIEW, appointments, days});
 
         console.log("Interview created/edited!", response);
       });
@@ -140,7 +114,7 @@ function useApplicationData() {
 
     return axios.delete(`http://localhost:8001/api/appointments/${id}`)
       .then(response => {
-        dispatch({ type: 'SET_INTERVIEW', appointments, days});
+        dispatch({ type: SET_INTERVIEW, appointments, days});
 
         
         console.log("Interview deleted!", response);
