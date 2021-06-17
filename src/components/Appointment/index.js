@@ -14,6 +14,8 @@ import Form from "./Form";
 
 
 export default function Appointment(props) {
+  // Set different modes to render based on state
+  // Modes are controlled by useVisualMode
   const SHOW = "SHOW";
   const EMPTY = "EMPTY";
   const CREATE = "CREATE";
@@ -28,9 +30,9 @@ export default function Appointment(props) {
     );
     
   // Takes the input for the student and the interviewer selected
-  // Creates an interview object to
+  // Creates an interview object
   // Takes the current appointment (props.id) with interview object
-  // to be used with bookInterview function
+  // to be used with bookInterview function to update state
   function save(name, interviewer) {
     const interview = {
       student: name,
@@ -40,27 +42,26 @@ export default function Appointment(props) {
     transition(SAVING);
     
     props.bookInterview(props.id, interview)
-      .then(response => {
+      .then(() => {
         transition(SHOW);
       })
       .catch(error => {
-        console.log("There was an error in saving the appointment")
         transition(ERROR_SAVE, true);
       });
   }
 
+  // Replace interview object to null, to be used to update state
+  // To be used with cancelInterview function to update state
   function destroy() {
-    // Replace interview object to null, to be used to update state
     const interview = null;
 
     transition(DELETING, true);
 
     props.cancelInterview(props.id, interview)
-      .then(response => {
+      .then(() => {
         transition(EMPTY);
       })
       .catch(error => {
-        console.log("There was an error in deleting the appointment")
         transition(ERROR_DELETE, true);
       });
   }
