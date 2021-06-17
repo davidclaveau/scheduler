@@ -25,7 +25,7 @@ export default function InterviewerList(props) {
       <ul className="interviewers__list">{interviewerList}</ul>
     </section>
   );
-};
+}
 
 InterviewerList.propTypes = {
   interviewers: PropTypes.array.isRequired

@@ -76,7 +76,7 @@ export default {
         });
       default:
         console.log("Improper url given:", url)
-    };
+    }
   }),
   put: jest.fn(url => {
     switch(url) {
@@ -92,7 +92,7 @@ export default {
         });
       default:
         console.log("Improper url given:", url)
-    };
+    }
   }),
   delete: jest.fn(url => {
     switch(url) {
@@ -103,6 +103,6 @@ export default {
         });
       default:
         console.log("Improper url given:", url)
-    };
+    }
   })
 };
