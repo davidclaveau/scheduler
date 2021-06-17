@@ -34,7 +34,7 @@ export default function reducer(state, action) {
         `Tried to reduce with unsupported type: ${action.type}`
       )
   }
-};
+}
 
 export {
   SET_DAY,
