@@ -10,7 +10,7 @@ export default function useVisualMode(initial) {
     setHistory(prev => {
       setMode(newMode);
        
-      // If replace is true, then we're replacing a value
+      // If replace is set as true, then we're replacing a value
       // in history with the newMode
       if (replace) {
         // Pop off the last one and replace with newMode
@@ -44,6 +44,4 @@ export default function useVisualMode(initial) {
     back
   });
 };
-
-// export { useVisualMode };
 

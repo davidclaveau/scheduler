@@ -16,6 +16,7 @@ function useApplicationData() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   
+  // Render the correct spots remaining when appts are created/deleted
   const updateSpotsRemaining = (state, id, appointments) => {
     const days = [
       ...state.days,
@@ -31,7 +32,7 @@ function useApplicationData() {
         }
 
         // Count interviews in that dayObj that are null
-        // add to spotsRemaining counter for null interviews
+        // Add to spotsRemaining for interviews that are null
         let spotsRemaining = 0;
         dayObjCopy.appointments.forEach(appt => {
           if (!appointments[appt].interview) {
@@ -40,6 +41,7 @@ function useApplicationData() {
         });
         
         // Update the spots for the dayObj, update days[index] to be returned
+        // with the correct spots remaining
         dayObjCopy.spots = spotsRemaining;
         days[index] = dayObjCopy;
       }
@@ -90,15 +92,13 @@ function useApplicationData() {
     const days = updateSpotsRemaining(state, id, appointments);
 
     return axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
-      .then(response => {
+      .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments, days});
-
-        console.log("Interview created/edited!", response);
       });
   }
 
   // Delete an appointment using appointment id
-  // Use interview obj (null) to set state
+  // Use interview obj (null) to set correct state
   function cancelInterview(id, interview) {
     const appointment = {
       ...state.appointments[id],
@@ -113,11 +113,8 @@ function useApplicationData() {
     const days = updateSpotsRemaining(state, id, appointments);
 
     return axios.delete(`http://localhost:8001/api/appointments/${id}`)
-      .then(response => {
+      .then(() => {
         dispatch({ type: SET_INTERVIEW, appointments, days});
-
-        
-        console.log("Interview deleted!", response);
       });
   }
 
